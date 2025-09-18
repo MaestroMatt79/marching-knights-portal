@@ -162,7 +162,7 @@ export default function App() {
                 }
               } catch (err) {
                 console.error(err);
-                alert("Sheets status update failed (saved locally).\\nCheck the Apps Script URL and permissions.");
+                alert("Sheets status update failed (saved locally).\nCheck the Apps Script URL and permissions.");
               }
             }}
           />
@@ -539,7 +539,7 @@ function SettingsPanel({ settings, students, onSaveSettings, onReplaceRoster, on
         <div className="font-semibold">Roster (CSV import)</div>
         <p className="text-sm text-zinc-300">Upload CSV with <code>Name</code>, <code>Section</code> (or <code>Instrument</code>), and optional <code>Email</code>. We'll trim blanks & dedupe by name.</p>
         <div className="flex items-center gap-2">
-          <input type="file" accept=".csv,text/csv" onChange={(e) => e.target.files?.[0] and handleCsv(e.target.files[0])} />
+          <input type="file" accept=".csv,text/csv" onChange={(e) => e.target.files?.[0] && handleCsv(e.target.files[0])} />
           <button onClick={downloadTemplate} className="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-sm">Download template</button>
         </div>
         {csvPreview.length > 0 && (
@@ -581,7 +581,7 @@ function lookupEventTitle(events, id) { return events.find((e) => e.id === id)?.
 function statusColor(status) { switch (status) { case "Approved": return "border-emerald-600 text-emerald-300"; case "Denied": return "border-rose-600 text-rose-300"; case "Cancelled": return "border-zinc-600 text-zinc-300"; default: return "border-amber-600 text-amber-300"; } }
 function dedupeByName(arr) { const seen = new Set(); const out = []; for (const r of arr) { const key = (r.name||"").trim().toLowerCase(); if (!key || seen.has(key)) continue; seen.add(key); out.push({ name: r.name.trim(), section: (r.section||"").trim(), email: (r.email||"").trim() }); } return out.sort((a,b)=>a.name.localeCompare(b.name)); }
 function parseCSVtoRoster(text) {
-  const lines = text.replace(/\\r/g, "").split("\\n").filter((l) => l.trim().length);
+  const lines = text.replace(/\r/g, "").split("\n").filter((l) => l.trim().length);
   if (!lines.length) return [];
   const headers = safeSplit(lines[0]).map((h) => h.toLowerCase());
   const idxName = headers.findIndex((h) => /name/.test(h));
