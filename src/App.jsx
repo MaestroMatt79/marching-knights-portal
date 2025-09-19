@@ -66,20 +66,21 @@ function saveState(s) { localStorage.setItem(LS_KEY, JSON.stringify(s)); }
 // Sheets sync (verbose errors + JSON guard)
 async function sheetsCreateOrUpdate(scriptUrl, payload) {
   try {
-    const res = await fetch(scriptUrl, {
+    const res = await fetch("/api/sheets", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ scriptUrl, ...payload }),
     });
     const text = await res.text();
     if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText} — ${text.slice(0,200)}`);
     try { return JSON.parse(text); }
-    catch { throw new Error(`Non-JSON response from Apps Script: ${text.slice(0,200)}`); }
+    catch { throw new Error(`Non-JSON from proxy: ${text.slice(0,200)}`); }
   } catch (err) {
     console.error("Sheets sync error:", err);
     throw err;
   }
 }
+
 
 // App
 export default function App() {
